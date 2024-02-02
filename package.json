@@ -19,7 +19,7 @@
   "dependencies": {
     "@coinbase/onchainkit": "^0.4.1",
     "permissionless": "^0.0.35",
-    "sharp": "^0.33.2",
+    "sharp": "^0.32.6",
     "v-satori": "^0.2.0",
     "viem": "^2.7.1"
   }

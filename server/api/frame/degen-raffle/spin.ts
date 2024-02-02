@@ -102,7 +102,6 @@ export default defineEventHandler(async (event) => {
     });
   } else {
     console.info("Sent");
-    // await kv.set(`spin:${fid}`, true);
     return getFrameHtmlResponse({
       buttons: [
         {

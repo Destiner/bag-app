@@ -19,7 +19,7 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   image: imageUrl,
-  post_url: `${baseUrl}/api/spin`,
+  post_url: `${baseUrl}/api/frame/degen-raffle/spin`,
 });
 
 const frameTags = Object.entries(frameMetadata).map(([key, value]) => ({

@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
           action: "post_redirect",
         },
       ],
-      post_url: `${baseUrl}/api/redirect?url=${baseUrl}/explore/address/${bagAddress}`,
+      post_url: `${baseUrl}/api/frame/redirect?url=${baseUrl}/explore/address/${bagAddress}`,
       image: getImageUrl(baseUrl, "Already claimed!", "normal"),
     });
   }

@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
           action: "post_redirect",
         },
       ],
-      post_url: `${baseUrl}/api/redirect?url=${baseUrl}/explore/address/${bagAddress}`,
+      post_url: `${baseUrl}/api/frame/redirect?url=${baseUrl}/explore/address/${bagAddress}`,
       image: getImageUrl(baseUrl, "Already participated!", "normal"),
     });
   }
@@ -109,7 +109,7 @@ export default defineEventHandler(async (event) => {
           action: "post_redirect",
         },
       ],
-      post_url: `${baseUrl}/api/redirect?url=${baseUrl}/explore/tx/${txHash}`,
+      post_url: `${baseUrl}/api/frame/redirect?url=${baseUrl}/explore/tx/${txHash}`,
       image: getImageUrl(
         baseUrl,
         `You won ${(amount / BigInt("1000000000000000000")).toString()} DEGEN!`,

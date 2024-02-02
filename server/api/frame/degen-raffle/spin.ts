@@ -1,15 +1,11 @@
 import { getFrameMessage, getFrameHtmlResponse } from "@coinbase/onchainkit";
 import type { FrameRequest } from "@coinbase/onchainkit";
-// import { kv } from "@vercel/kv";
 import type { Hex } from "viem";
 
 import { getImageUrl } from "~/utils/frames/degen-raffle";
 
 import {
-  // getAccountAddress,
   getWalletAddress,
-  // isActive,
-  // isRecasted,
   getNftBalance,
   getTokenBalance,
   transferToken,
@@ -45,7 +41,6 @@ export default defineEventHandler(async (event) => {
   // Get the drop target address
   const bagAddress = await getWalletAddress(privateKey, fid);
   // Check that the NFT is not spinned yet by this FID
-  // const didSpin = await kv.get<boolean>(`spin:${fid}`);
   const tokenBalance = await getTokenBalance(bagAddress, degenAddress);
   if (tokenBalance > BigInt(0)) {
     console.info("Already spinned");
@@ -60,24 +55,6 @@ export default defineEventHandler(async (event) => {
       image: getImageUrl(baseUrl, "Already participated!", "normal"),
     });
   }
-  // Check that the user is recasted OR is active
-  // const userIsActive = await isActive(fid);
-  // if (!userIsActive) {
-  //   const userIsRecasted = await isRecasted(fid, castHash);
-  //   if (!userIsRecasted) {
-  //     console.info("Not eligible", userIsActive, userIsRecasted);
-  //     return getFrameHtmlResponse({
-  //       buttons: [
-  //         {
-  //           label: "Retry",
-  //           action: "post",
-  //         },
-  //       ],
-  //       post_url: `${baseUrl}/api/frame/degen-raffle/spin`,
-  //       image: getImageUrl(baseUrl, "Please recast and try again", "error"),
-  //     });
-  //   }
-  // }
   const nftBalance = await getNftBalance(bagAddress, nftAddress, 1);
   const nftMultiplier = nftBalance > BigInt(0) ? BigInt(2) : BigInt(1);
   // Exponential time-based decay, starting from 1e18 and ending at 1e9 in 24 hours

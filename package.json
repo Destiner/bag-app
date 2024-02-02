@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@coinbase/onchainkit": "^0.4.1",
-    "@vercel/kv": "^0.2.4",
     "permissionless": "^0.0.35",
     "sharp": "^0.33.2",
     "v-satori": "^0.2.0",

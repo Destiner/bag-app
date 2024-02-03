@@ -13,6 +13,10 @@ const route = useRoute();
 const url = computed(() => {
   return `https://basescan.org/advanced-filter?fadd=${route.params.address}&txntype=2&amt=10%7e10&tkn=0x4ed4e862860bed51a9570b96d89af5e1b0efefed`;
 });
+
+navigateTo(url.value, {
+  external: true,
+});
 </script>
 
 <style scoped>

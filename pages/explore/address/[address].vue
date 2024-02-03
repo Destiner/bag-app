@@ -13,6 +13,10 @@ const route = useRoute();
 const url = computed(() => {
   return `https://basescan.org/address/${route.params.address}`;
 });
+
+navigateTo(url.value, {
+  external: true,
+});
 </script>
 
 <style scoped>

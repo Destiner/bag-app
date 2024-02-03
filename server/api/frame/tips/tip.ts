@@ -119,6 +119,6 @@ export default defineEventHandler(async (event) => {
         action: "post_redirect",
       },
     ],
-    post_url: `${baseUrl}/api/frame/redirect?url=${baseUrl}/explore/tip/${sourceAddress}`,
+    post_url: `${baseUrl}/explore/tip/${sourceAddress}`,
   });
 });

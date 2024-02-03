@@ -306,7 +306,7 @@ async function execute(
       const response = await paymasterClient.sponsorUserOperation({
         userOperation: args.userOperation,
         entryPoint: args.entryPoint,
-        sponsorshipPolicyId: "sp_demonic_tarantula",
+        sponsorshipPolicyId: "sp_base_frame",
       });
       return response;
     },

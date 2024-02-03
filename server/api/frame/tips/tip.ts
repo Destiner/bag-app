@@ -95,7 +95,7 @@ export default defineEventHandler(async (event) => {
           action: "post_redirect",
         },
       ],
-      post_url: `${baseUrl}/api/frame/redirect?url=${baseUrl}/explore/address/${sourceAddress}`,
+      post_url: `${baseUrl}/explore/address/${sourceAddress}`,
     });
   }
   // send via pimlico/permissionless

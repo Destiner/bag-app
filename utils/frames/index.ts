@@ -49,7 +49,11 @@ interface WarpcastProfile {
         user: {
           fid: number;
           username: string | undefined;
-          avatar: string | undefined;
+          pfp:
+            | {
+                url: string | undefined;
+              }
+            | undefined;
           displayName: string | undefined;
           activeOnFcNetwork: boolean;
         };

@@ -10,7 +10,7 @@ import { getImageUrl } from "~/utils/frames/tips";
 const route = useRoute();
 const config = useRuntimeConfig();
 
-const userUsername = route.params.username as string;
+const userUsername = route.query.username as string;
 const baseUrl = config.public.baseUrl as string;
 
 const warpcastProfile = await getWarpcastProfile(userUsername);
@@ -18,7 +18,7 @@ const warpcastProfile = await getWarpcastProfile(userUsername);
 if (warpcastProfile.result) {
   const fid = warpcastProfile.result.user.fid;
   const active = warpcastProfile.result.user.activeOnFcNetwork;
-  const userAvatar = warpcastProfile.result.user.avatar;
+  const userAvatar = warpcastProfile.result.user.pfp?.url;
   const userName = warpcastProfile.result.user.displayName;
 
   if (userAvatar && userName) {

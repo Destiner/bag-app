@@ -281,13 +281,13 @@ async function execute(
     ),
   }).extend(pimlicoPaymasterActions);
 
-  const bundlerClient = createPimlicoBundlerClient({
-    transport: http(
-      `https://api.pimlico.io/v1/${chainName}/rpc?apikey=${pimlicoApiKey}`
-    ),
-  });
+  // const bundlerClient = createPimlicoBundlerClient({
+  //   transport: http(
+  //     `https://api.pimlico.io/v1/${chainName}/rpc?apikey=${pimlicoApiKey}`
+  //   ),
+  // });
 
-  const gasPrices = await bundlerClient.getUserOperationGasPrice();
+  // const gasPrices = await bundlerClient.getUserOperationGasPrice();
 
   const safeAccount = await privateKeyToSafeSmartAccount(publicClient, {
     privateKey: privateKey,
@@ -317,8 +317,8 @@ async function execute(
       to,
       data,
       value,
-      maxFeePerGas: gasPrices.fast.maxFeePerGas,
-      maxPriorityFeePerGas: gasPrices.fast.maxPriorityFeePerGas,
+      // maxFeePerGas: gasPrices.fast.maxFeePerGas,
+      // maxPriorityFeePerGas: gasPrices.fast.maxPriorityFeePerGas,
     });
 
     return txHash;

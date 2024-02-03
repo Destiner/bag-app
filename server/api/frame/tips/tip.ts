@@ -79,8 +79,9 @@ export default defineEventHandler(async (event) => {
   const sourceAddress = await getWalletAddress(privateKey, fid);
   // get "target" account bag addr
   const targetAddress = await getWalletAddress(privateKey, targetFid);
+  console.info(`Source = ${sourceAddress}, target = ${targetAddress}`);
   // get "donor" account balance
-  const tokenBalance = await getTokenBalance(privateKey, sourceAddress);
+  const tokenBalance = await getTokenBalance(sourceAddress, degenAddress);
   if (tokenBalance < tipAmount) {
     console.info("Low balance");
     return getFrameHtmlResponse({

@@ -99,7 +99,7 @@ export default defineEventHandler(async (event) => {
     });
   }
   // send via pimlico/permissionless
-  const txHash = await execute(
+  execute(
     pimlicoApiKey,
     privateKey,
     fid,
@@ -107,19 +107,10 @@ export default defineEventHandler(async (event) => {
     getErc20TransferData(targetAddress, tipAmount),
     BigInt(0)
   );
-  if (!txHash) {
-    console.info("No tx");
-    return getFrameHtmlResponse({
-      image: getImageUrl(baseUrl, user, {
-        text: "Unable to make the tx",
-        status: "error",
-      }),
-    });
-  }
-  console.info("Tip sent");
+  console.info("Tip submitted");
   return getFrameHtmlResponse({
     image: getImageUrl(baseUrl, user, {
-      text: "Tip sent",
+      text: "Tip sent!",
       status: "success",
     }),
     buttons: [
@@ -128,6 +119,6 @@ export default defineEventHandler(async (event) => {
         action: "post_redirect",
       },
     ],
-    post_url: `${baseUrl}/api/frame/redirect?url=${baseUrl}/explore/tx/${txHash}`,
+    post_url: `${baseUrl}/api/frame/redirect?url=${baseUrl}/explore/tip/${sourceAddress}`,
   });
 });

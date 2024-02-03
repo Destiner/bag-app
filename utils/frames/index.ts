@@ -6,6 +6,12 @@ import { base } from "viem/chains";
 
 import erc20Abi from "@/assets/abi/erc20";
 import zoraErc1155Abi from "@/assets/abi/zoraErc1155";
+import {
+  createPimlicoBundlerClient,
+  createPimlicoPaymasterClient,
+} from "permissionless/clients/pimlico";
+import { pimlicoPaymasterActions } from "permissionless/actions/pimlico";
+import { createSmartAccountClient } from "permissionless";
 
 type FidResponse = {
   verifications: string[];
@@ -36,6 +42,22 @@ interface FarcasterUsers {
     active_status: "active" | "inactive";
   }[];
 }
+
+interface WarpcastProfile {
+  result:
+    | {
+        user: {
+          fid: number;
+          username: string | undefined;
+          avatar: string | undefined;
+          displayName: string | undefined;
+          activeOnFcNetwork: boolean;
+        };
+      }
+    | undefined;
+}
+
+const chain = base;
 
 async function getAccountAddress(
   neynarApiKey: string,
@@ -119,7 +141,7 @@ async function getWalletAddress(
   fid: number
 ): Promise<Address> {
   const publicClient = createPublicClient({
-    transport: http("https://mainnet.base.org"),
+    transport: http(chain.rpcUrls.default.http[0]),
   });
   const safeAccount = await privateKeyToSafeSmartAccount(publicClient, {
     privateKey: privateKey,
@@ -136,7 +158,7 @@ async function getNftBalance(
   tokenId: number
 ): Promise<bigint> {
   const publicClient = createPublicClient({
-    transport: http("https://mainnet.base.org"),
+    transport: http(chain.rpcUrls.default.http[0]),
   });
   const balance = await publicClient.readContract({
     address: token,
@@ -152,7 +174,7 @@ async function getTokenBalance(
   token: Address
 ): Promise<bigint> {
   const publicClient = createPublicClient({
-    transport: http("https://mainnet.base.org"),
+    transport: http(chain.rpcUrls.default.http[0]),
   });
   const balance = await publicClient.readContract({
     address: token,
@@ -170,11 +192,11 @@ async function transferToken(
   amount: bigint
 ): Promise<string | null> {
   const publicClient = createPublicClient({
-    transport: http("https://mainnet.base.org"),
+    transport: http(chain.rpcUrls.default.http[0]),
   });
   const walletClient = createWalletClient({
-    chain: base,
-    transport: http("https://mainnet.base.org"),
+    chain: chain,
+    transport: http(chain.rpcUrls.default.http[0]),
   });
   try {
     const { request } = await publicClient.simulateContract({
@@ -202,11 +224,11 @@ async function zoraAdminMint(
   address: Address
 ): Promise<string | null> {
   const publicClient = createPublicClient({
-    transport: http("https://mainnet.base.org"),
+    transport: http(chain.rpcUrls.default.http[0]),
   });
   const walletClient = createWalletClient({
-    chain: base,
-    transport: http("https://mainnet.base.org"),
+    chain: chain,
+    transport: http(chain.rpcUrls.default.http[0]),
   });
   try {
     const { request } = await publicClient.simulateContract({
@@ -227,6 +249,87 @@ async function zoraAdminMint(
   }
 }
 
+async function getWarpcastProfile(username: string): Promise<WarpcastProfile> {
+  const warpcastProfileResponse = await fetch(
+    `https://api.warpcast.com/v2/user-by-username?username=${username}`
+  );
+  const profile = (await warpcastProfileResponse.json()) as WarpcastProfile;
+  return profile;
+}
+
+async function execute(
+  pimlicoApiKey: string,
+  privateKey: Hex,
+  fid: number,
+  to: Address,
+  data: Hex,
+  value: bigint
+): Promise<string | null> {
+  const chainName = chain.name.toLowerCase();
+
+  const publicClient = createPublicClient({
+    transport: http(chain.rpcUrls.default.http[0]),
+  });
+
+  const paymasterClient = createPimlicoPaymasterClient({
+    transport: http(
+      `https://api.pimlico.io/v2/${chainName}/rpc?apikey=${pimlicoApiKey}`
+    ),
+  }).extend(pimlicoPaymasterActions);
+
+  const bundlerClient = createPimlicoBundlerClient({
+    transport: http(
+      `https://api.pimlico.io/v1/${chainName}/rpc?apikey=${pimlicoApiKey}`
+    ),
+  });
+
+  const gasPrices = await bundlerClient.getUserOperationGasPrice();
+
+  const safeAccount = await privateKeyToSafeSmartAccount(publicClient, {
+    privateKey: privateKey,
+    safeVersion: "1.4.1",
+    entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+    saltNonce: BigInt(fid),
+  });
+
+  const smartAccountClient = createSmartAccountClient({
+    account: safeAccount,
+    chain: chain,
+    transport: http(
+      `https://api.pimlico.io/v1/${chainName}/rpc?apikey=${pimlicoApiKey}`
+    ),
+    sponsorUserOperation: async (args) => {
+      const response = await paymasterClient.sponsorUserOperation({
+        userOperation: args.userOperation,
+        entryPoint: args.entryPoint,
+        sponsorshipPolicyId: "sp_base_frame",
+      });
+      return response;
+    },
+  });
+
+  try {
+    const txHash = await smartAccountClient.sendTransaction({
+      to,
+      data,
+      value,
+      maxFeePerGas: gasPrices.fast.maxFeePerGas,
+      maxPriorityFeePerGas: gasPrices.fast.maxPriorityFeePerGas,
+    });
+
+    return txHash;
+  } catch {
+    return null;
+  }
+}
+
+function getErc20TransferData(to: string, amount: bigint): Hex {
+  const selector = "0xa9059cbb";
+  const paddedAddress = to.slice(2).padStart(64, "0");
+  const paddedAmount = amount.toString(16).padStart(64, "0");
+  return (selector + paddedAddress + paddedAmount) as Hex;
+}
+
 export {
   getAccountAddress,
   getWalletAddress,
@@ -236,5 +339,8 @@ export {
   getTokenBalance,
   transferToken,
   zoraAdminMint,
+  getWarpcastProfile,
+  getErc20TransferData,
+  execute,
 };
 export type { FrameRequestBody };

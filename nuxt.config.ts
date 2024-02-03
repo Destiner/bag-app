@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     neynarApiKey: process.env.NUXT_NEYNAR_API_KEY,
     sponsorMnemonic: process.env.NUXT_SPONSOR_MNEMONIC,
     aaPrivateKey: process.env.NUXT_AA_PRIVATE_KEY,
+    pimlicoApiKey: process.env.NUXT_PIMLICO_API_KEY,
     public: {
       baseUrl: process.env.NUXT_PUBLIC_BASE_URL,
     },

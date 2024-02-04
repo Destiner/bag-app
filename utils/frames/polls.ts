@@ -1,4 +1,5 @@
 import { SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
+import axios from "axios";
 import {
   createPublicClient,
   encodeFunctionData,
@@ -23,6 +24,11 @@ interface PollResults {
   question: string;
   answers: PollResultAnswer[];
 }
+
+const subgraphClient = axios.create({
+  baseURL: "https://eas-ponder-graph-production.up.railway.app/",
+  headers: { "Content-Type": "application/json" },
+});
 
 function getStartImageUrl(baseUrl: string, pollQuestion: string): string {
   const imageParams = {
@@ -94,5 +100,45 @@ async function getPoll(id: number): Promise<Poll> {
   };
 }
 
-export { getStartImageUrl, getPoll, getEasAttestData };
+async function hasVoted(pollId: bigint, voter: string): Promise<boolean> {
+  const query = `
+    query {
+      votes(where: {
+        pollId: ${parseInt(pollId.toString())},
+        voter: "${voter}"
+      }) {
+        id
+      }
+    }
+  `;
+  const response = await subgraphClient.post("/", {
+    query,
+  });
+  const data = response.data.data as { votes: { id: string }[] };
+  return data.votes.length > 0;
+}
+
+async function getResults(pollId: bigint): Promise<number[]> {
+  const query = `
+    query {
+      poll(id: ${parseInt(pollId.toString())} {
+        votes
+      }
+    }
+  `;
+  const response = await subgraphClient.post("/", {
+    query,
+  });
+  const data = response.data.data as { poll: { votes: number[] } | null };
+  return data.poll?.votes || [];
+}
+
+export {
+  getStartImageUrl,
+  getResultsImageUrl,
+  getPoll,
+  getEasAttestData,
+  hasVoted,
+  getResults,
+};
 export type { Poll, PollResultAnswer, PollResults };

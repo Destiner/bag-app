@@ -2,14 +2,15 @@ import { getFrameMessage, getFrameHtmlResponse } from "@coinbase/onchainkit";
 import type { FrameRequest } from "@coinbase/onchainkit";
 import { parseEther, type Hex } from "viem";
 
-import { getStartImageUrl, getEasAttestData } from "~/utils/frames/polls";
-
 import {
-  getWalletAddress,
-  getTokenBalance,
-  execute,
-  getErc20TransferData,
-} from "~/utils/frames";
+  getStartImageUrl,
+  getResultsImageUrl,
+  getEasAttestData,
+  hasVoted,
+  getResults,
+  getPoll,
+} from "~/utils/frames/polls";
+import { execute, getWalletAddress } from "~/utils/frames";
 
 const config = useRuntimeConfig();
 
@@ -29,6 +30,7 @@ export default defineEventHandler(async (event) => {
   const pollIdString = query.pollId as string;
   const pollId = parseInt(pollIdString);
   const answerIndex = validation.message?.button;
+
   // validate answer
   if (!answerIndex) {
     console.info("Invalid button index");
@@ -52,6 +54,24 @@ export default defineEventHandler(async (event) => {
       image: getStartImageUrl(baseUrl, "No FID"),
     });
   }
+
+  const voterAddress = await getWalletAddress(privateKey, fid);
+  const hasVotedAlready = await hasVoted(BigInt(pollId), voterAddress);
+  if (hasVotedAlready) {
+    // fetch results
+    const results = await getResults(BigInt(pollId));
+    console.info("Results", results);
+    const poll = await getPoll(pollId);
+    const answers = poll.answers.map((answer, index) => ({
+      text: answer,
+      votes: results[index],
+    }));
+    // show results
+    return getFrameHtmlResponse({
+      image: getResultsImageUrl(baseUrl, poll.question, answers),
+    });
+  }
+
   // vote using eas
   execute(
     pimlicoApiKey,
@@ -63,5 +83,15 @@ export default defineEventHandler(async (event) => {
   );
   console.info("Vote submitted");
   // fetch results
+  const results = await getResults(BigInt(pollId));
+  console.info("Results", results);
+  const poll = await getPoll(pollId);
+  const answers = poll.answers.map((answer, index) => ({
+    text: answer,
+    votes: results[index],
+  }));
   // show results
+  return getFrameHtmlResponse({
+    image: getResultsImageUrl(baseUrl, poll.question, answers),
+  });
 });

@@ -29,8 +29,13 @@ export default defineEventHandler(async (event) => {
       return answer ? { text: answer, votes: answerVotes[index] } : undefined;
     })
     .filter(
-      (answer) => answer !== undefined && answer.text !== undefined
+      (answer) =>
+        answer !== undefined &&
+        answer.text !== undefined &&
+        !Number.isNaN(answer.votes)
     ) as PollResultAnswer[];
+
+  console.info("Poll results", answers, validAnswers);
 
   const svg = await satori(Image, {
     props: {

@@ -74,11 +74,11 @@ function getEasAttestData(
         schema: schemaUid as Hex,
         data: {
           recipient: zeroAddress,
-          expirationTime: 0n,
+          expirationTime: BigInt(0),
           revocable: true,
           refUID: zeroHash,
           data: encodedData as Hex,
-          value: 0n,
+          value: BigInt(0),
         },
       },
     ],

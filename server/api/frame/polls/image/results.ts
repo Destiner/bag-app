@@ -35,8 +35,6 @@ export default defineEventHandler(async (event) => {
         !Number.isNaN(answer.votes)
     ) as PollResultAnswer[];
 
-  console.info("Poll results", answers, validAnswers);
-
   const svg = await satori(Image, {
     props: {
       poll: {

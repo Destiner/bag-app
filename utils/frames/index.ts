@@ -267,7 +267,8 @@ async function execute(
   fid: number,
   to: Address,
   data: Hex,
-  value: bigint
+  value: bigint,
+  sponsorshipPolicyId?: string
 ): Promise<string | null> {
   const chainName = chain.name.toLowerCase();
 
@@ -306,7 +307,7 @@ async function execute(
       const response = await paymasterClient.sponsorUserOperation({
         userOperation: args.userOperation,
         entryPoint: args.entryPoint,
-        sponsorshipPolicyId: "sp_base_frame",
+        sponsorshipPolicyId: sponsorshipPolicyId || "sp_base_frame",
       });
       return response;
     },

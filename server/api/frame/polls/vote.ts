@@ -69,6 +69,13 @@ export default defineEventHandler(async (event) => {
     // show results
     return getFrameHtmlResponse({
       image: getResultsImageUrl(baseUrl, poll.question, answers),
+      buttons: [
+        {
+          label: "Show Vote",
+          action: "post_redirect",
+        },
+      ],
+      post_url: `${baseUrl}/explore/vote/${voterAddress}`,
     });
   }
 
@@ -93,5 +100,12 @@ export default defineEventHandler(async (event) => {
   // show results
   return getFrameHtmlResponse({
     image: getResultsImageUrl(baseUrl, poll.question, answers),
+    buttons: [
+      {
+        label: "Show Vote",
+        action: "post_redirect",
+      },
+    ],
+    post_url: `${baseUrl}/explore/vote/${voterAddress}`,
   });
 });

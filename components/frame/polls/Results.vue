@@ -27,7 +27,7 @@
       "
     >
       <div
-        v-for="answer in answers"
+        v-for="answer in validAnswers"
         style="display: flex; justify-content: space-between; width: 100%"
       >
         <div style="display: flex">{{ answer.text }}</div>
@@ -52,7 +52,14 @@ const props = defineProps<{
   answers: PollResultAnswer[];
 }>();
 
-const totalVotes = props.answers.reduce((acc, answer) => acc + answer.votes, 0);
+const validAnswers = computed(() =>
+  props.answers.filter((answer) => answer.text !== undefined)
+);
+
+const totalVotes = validAnswers.value.reduce(
+  (acc, answer) => acc + answer.votes,
+  0
+);
 
 function getPercentage(count: number) {
   return (count / totalVotes) * 100;

@@ -122,7 +122,7 @@ async function hasVoted(pollId: bigint, voter: string): Promise<boolean> {
 async function getResults(pollId: bigint): Promise<number[]> {
   const query = `
     query {
-      poll(id: ${parseInt(pollId.toString())} {
+      poll(id: ${parseInt(pollId.toString())}) {
         votes
       }
     }

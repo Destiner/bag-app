@@ -114,6 +114,7 @@ async function hasVoted(pollId: bigint, voter: string): Promise<boolean> {
   const response = await subgraphClient.post("/", {
     query,
   });
+  console.log("has voted", response.data);
   const data = response.data.data as { votes: { id: string }[] };
   return data.votes.length > 0;
 }
@@ -129,6 +130,7 @@ async function getResults(pollId: bigint): Promise<number[]> {
   const response = await subgraphClient.post("/", {
     query,
   });
+  console.log("get resutls", response.data);
   const data = response.data.data as { poll: { votes: number[] } | null };
   return data.poll?.votes || [];
 }

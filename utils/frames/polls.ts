@@ -58,6 +58,7 @@ function getResultsImageUrl(
   };
   const urlParams = new URLSearchParams(imageParams);
   const imageUrl = new URL(`${baseUrl}/api/frame/polls/image/results`);
+  console.log("polls", imageParams);
   imageUrl.search = urlParams.toString();
   return imageUrl.toString();
 }

@@ -19,6 +19,7 @@
   "dependencies": {
     "@coinbase/onchainkit": "^0.4.1",
     "@ethereum-attestation-service/eas-sdk": "^1.4.1",
+    "axios": "^1.6.7",
     "permissionless": "^0.0.35",
     "sharp": "^0.32.6",
     "v-satori": "^0.2.0",

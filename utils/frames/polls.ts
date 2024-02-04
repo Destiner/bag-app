@@ -130,7 +130,11 @@ async function getResults(pollId: bigint): Promise<number[]> {
     query,
   });
   const data = response.data.data as { poll: { votes: number[] } | null };
-  return data.poll?.votes || [];
+  const poll = data.poll;
+  if (!poll) {
+    return [];
+  }
+  return poll.votes.slice(1);
 }
 
 export {

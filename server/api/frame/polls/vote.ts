@@ -79,8 +79,7 @@ export default defineEventHandler(async (event) => {
     fid,
     easContractAddress,
     getEasAttestData(schemaUid, pollId, answerIndex),
-    BigInt(0),
-    "sp_demonic_tarantula"
+    BigInt(0)
   );
   console.info("Vote submitted");
   // fetch results

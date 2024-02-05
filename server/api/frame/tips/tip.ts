@@ -10,6 +10,7 @@ import {
   getWarpcastProfile,
   execute,
   getErc20TransferData,
+  getErrorImageUrl,
 } from "~/utils/frames";
 
 const config = useRuntimeConfig();
@@ -40,39 +41,27 @@ export default defineEventHandler(async (event) => {
   if (!targetFid || !targetName || !targetAvatar) {
     console.info("Missing user data");
     return getFrameHtmlResponse({
-      image: getImageUrl(baseUrl, user, {
-        text: "Missing user details",
-        status: "error",
-      }),
+      image: getErrorImageUrl(baseUrl, "Missing user details"),
     });
   }
   if (!isActive) {
     console.info("Inactive user");
     return getFrameHtmlResponse({
-      image: getImageUrl(baseUrl, user, {
-        text: "User not active",
-        status: "error",
-      }),
+      image: getErrorImageUrl(baseUrl, "User not active"),
     });
   }
 
   if (!validation.isValid) {
     console.info("Invalid message");
     return getFrameHtmlResponse({
-      image: getImageUrl(baseUrl, user, {
-        text: "Invalid message",
-        status: "error",
-      }),
+      image: getErrorImageUrl(baseUrl, "Invalid message"),
     });
   }
   const fid = validation.message.interactor.fid;
   if (!fid) {
     console.info("No FID");
     return getFrameHtmlResponse({
-      image: getImageUrl(baseUrl, user, {
-        text: "FID not found",
-        status: "error",
-      }),
+      image: getErrorImageUrl(baseUrl, "FID not found"),
     });
   }
   // get "donor" account bag addr
@@ -85,10 +74,7 @@ export default defineEventHandler(async (event) => {
   if (tokenBalance < tipAmount) {
     console.info("Low balance");
     return getFrameHtmlResponse({
-      image: getImageUrl(baseUrl, user, {
-        text: "Not enough $DEGEN",
-        status: "error",
-      }),
+      image: getErrorImageUrl(baseUrl, "Not enough $DEGEN"),
       buttons: [
         {
           label: "View Bag",

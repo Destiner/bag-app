@@ -10,7 +10,7 @@ import {
   getResults,
   getPoll,
 } from "~/utils/frames/polls";
-import { execute, getWalletAddress } from "~/utils/frames";
+import { execute, getWalletAddress, getErrorImageUrl } from "~/utils/frames";
 
 const config = useRuntimeConfig();
 
@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
   if (!answerIndex) {
     console.info("Invalid button index");
     return getFrameHtmlResponse({
-      image: getStartImageUrl(baseUrl, "Invalid button index"),
+      image: getErrorImageUrl(baseUrl, "Invalid button index"),
     });
   }
 
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
   if (!validation.isValid) {
     console.info("Invalid message");
     return getFrameHtmlResponse({
-      image: getStartImageUrl(baseUrl, "Invalid message"),
+      image: getErrorImageUrl(baseUrl, "Invalid message"),
     });
   }
   // get voter fid
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
   if (!fid) {
     console.info("No FID");
     return getFrameHtmlResponse({
-      image: getStartImageUrl(baseUrl, "No FID"),
+      image: getErrorImageUrl(baseUrl, "No FID"),
     });
   }
 

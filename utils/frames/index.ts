@@ -335,6 +335,17 @@ function getErc20TransferData(to: string, amount: bigint): Hex {
   return (selector + paddedAddress + paddedAmount) as Hex;
 }
 
+function getErrorImageUrl(baseUrl: string, reason: string | undefined): string {
+  const imageParams: Record<string, string> = {};
+  if (reason) {
+    imageParams.reason = reason;
+  }
+  const urlParams = new URLSearchParams(imageParams);
+  const imageUrl = new URL(`${baseUrl}/api/frame/image-error`);
+  imageUrl.search = urlParams.toString();
+  return imageUrl.toString();
+}
+
 export {
   getAccountAddress,
   getWalletAddress,
@@ -347,5 +358,6 @@ export {
   getWarpcastProfile,
   getErc20TransferData,
   execute,
+  getErrorImageUrl,
 };
 export type { FrameRequestBody };

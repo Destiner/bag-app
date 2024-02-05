@@ -9,7 +9,6 @@ import Image from "@/components/frame/polls/Start.vue";
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
   const pollQuestion = query.pollQuestion as string;
-  console.log("api/frame/polls/image/start", pollQuestion);
   const svg = await satori(Image, {
     props: {
       poll: {

@@ -45,7 +45,10 @@ function getResultsImageUrl(
   pollQuestion: string,
   pollAnswers: PollResultAnswer[]
 ): string {
+  // Use timestamp minute to avoid caching
+  const timestamp = Math.floor(Date.now() / 60000) * 60000;
   const imageParams = {
+    timestamp: timestamp.toString(),
     pollQuestion,
     answer1: pollAnswers[0]?.text,
     answer2: pollAnswers[1]?.text,

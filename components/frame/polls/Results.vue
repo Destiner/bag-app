@@ -43,6 +43,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+
 import type { PollResultAnswer } from "~/utils/frames/polls";
 
 const props = defineProps<{

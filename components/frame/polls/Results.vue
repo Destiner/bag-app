@@ -27,10 +27,20 @@
       "
     >
       <div
-        v-for="answer in validAnswers"
+        v-for="(answer, index) in validAnswers"
         style="display: flex; justify-content: space-between; width: 100%"
       >
-        <div style="display: flex">{{ answer.text }}</div>
+        <div style="display: flex; gap: 16px; align-items: center">
+          <div style="display: flex; width: 160px">{{ answer.text }}</div>
+          <div
+            :style="{
+              display: 'flex',
+              height: '56px',
+              width: getBackgroundWidth(index),
+              background: getBackgroundColor(index),
+            }"
+          />
+        </div>
         <div style="display: flex; gap: 24px">
           <div style="display: flex">{{ answer.votes }}</div>
           <div style="display: flex">
@@ -69,5 +79,27 @@ function getPercentage(count: number) {
 
 function formatPercentage(percentage: number) {
   return `${percentage.toFixed(0)}%`;
+}
+
+function getBackgroundColor(index: number) {
+  if (index === 0) {
+    return "#B7EBB9";
+  }
+  if (index === 1) {
+    return "#F0C5F7";
+  }
+  if (index === 2) {
+    return "#EFCF7C";
+  }
+  if (index === 3) {
+    return "#76F2FA";
+  }
+  return "white";
+}
+
+function getBackgroundWidth(index: number) {
+  const percentage = getPercentage(validAnswers.value[index].votes);
+  const maxWidth = 600;
+  return `${(percentage / 100) * maxWidth}px`;
 }
 </script>

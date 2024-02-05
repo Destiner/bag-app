@@ -58,6 +58,7 @@ export default defineEventHandler(async (event) => {
   const voterAddress = await getWalletAddress(privateKey, fid);
   const hasVotedAlready = await hasVoted(BigInt(pollId), voterAddress);
   if (hasVotedAlready) {
+    console.info("Has voted already");
     // fetch results
     const results = await getResults(BigInt(pollId));
     console.info("Results", results);

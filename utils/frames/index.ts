@@ -5,7 +5,7 @@ import { mnemonicToAccount } from "viem/accounts";
 import { base } from "viem/chains";
 
 import erc20Abi from "@/assets/abi/erc20";
-import zoraErc1155Abi from "@/assets/abi/zoraErc1155";
+import zoraErc1155Abi from "~/assets/abi/zoraErc1155Minter";
 import {
   createPimlicoBundlerClient,
   createPimlicoPaymasterClient,

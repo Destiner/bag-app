@@ -14,6 +14,7 @@ import {
 const config = useRuntimeConfig();
 
 const baseUrl = config.public.baseUrl as string;
+const neynarApiKey = config.neynarApiKey as string;
 const privateKey = config.aaPrivateKey as Hex;
 const adminMnemonic = config.sponsorMnemonic as string;
 
@@ -23,7 +24,9 @@ const dateStart = 1706807845000;
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<FrameRequest>(event);
-  const validation = await getFrameMessage(body);
+  const validation = await getFrameMessage(body, {
+    neynarApiKey,
+  });
   if (!validation.isValid) {
     console.info("Invalid message");
     return getFrameHtmlResponse({

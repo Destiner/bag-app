@@ -9,13 +9,16 @@ import { getWalletAddress, getNftBalance } from "~/utils/frames";
 const config = useRuntimeConfig();
 
 const baseUrl = config.public.baseUrl as string;
+const neynarApiKey = config.neynarApiKey as string;
 const privateKey = config.aaPrivateKey as Hex;
 
 const contractAddress = "0x02A94f6292A00233eb07B2D8d403e911924E1948";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<FrameRequest>(event);
-  const validation = await getFrameMessage(body);
+  const validation = await getFrameMessage(body, {
+    neynarApiKey,
+  });
   if (!validation.isValid) {
     console.info("Invalid message");
     return getFrameHtmlResponse({

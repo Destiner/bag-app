@@ -15,6 +15,7 @@ import { execute, getWalletAddress, getErrorImageUrl } from "~/utils/frames";
 const config = useRuntimeConfig();
 
 const baseUrl = config.public.baseUrl as string;
+const neynarApiKey = config.neynarApiKey as string;
 const privateKey = config.aaPrivateKey as Hex;
 const pimlicoApiKey = config.pimlicoApiKey as string;
 
@@ -24,7 +25,9 @@ const schemaUid =
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<FrameRequest>(event);
-  const validation = await getFrameMessage(body);
+  const validation = await getFrameMessage(body, {
+    neynarApiKey,
+  });
 
   const query = getQuery(event);
   const pollIdString = query.pollId as string;

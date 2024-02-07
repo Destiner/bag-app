@@ -16,6 +16,7 @@ import {
 const config = useRuntimeConfig();
 
 const baseUrl = config.public.baseUrl as string;
+const neynarApiKey = config.neynarApiKey as string;
 const privateKey = config.aaPrivateKey as Hex;
 const pimlicoApiKey = config.pimlicoApiKey as string;
 
@@ -24,7 +25,9 @@ const tipAmount = parseEther("10");
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<FrameRequest>(event);
-  const validation = await getFrameMessage(body);
+  const validation = await getFrameMessage(body, {
+    neynarApiKey,
+  });
 
   const query = getQuery(event);
   const targetUsername = query.username as string;

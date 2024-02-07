@@ -26,12 +26,9 @@ const pimlicoApiKey = config.pimlicoApiKey as string;
 
 const degenAddress = "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed";
 const priceAmount = parseEther("100");
-// TODO change this
-const marketAddress = "0x46D83644c8f3cB1DD9FEF13096DF4119997Fc27c";
-// TODO change this
-const nftAddress = "0x4741856059b0C81093dabeBae23fFF93A13D3965";
-// TODO change this
-const nftTokenId = 1;
+const marketAddress = "0xdE33389BCDE526Ef33f6351e34d27A5E21097C5D";
+const nftAddress = "0x02a94f6292a00233eb07b2d8d403e911924e1948";
+const nftTokenId = 2;
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<FrameRequest>(event);
@@ -40,15 +37,14 @@ export default defineEventHandler(async (event) => {
   });
 
   // validate message
-  // if (!validation.isValid) {
-  //   console.info("Invalid message");
-  //   return getFrameHtmlResponse({
-  //     image: getErrorImageUrl(baseUrl, "Invalid message"),
-  //   });
-  // }
+  if (!validation.isValid) {
+    console.info("Invalid message");
+    return getFrameHtmlResponse({
+      image: getErrorImageUrl(baseUrl, "Invalid message"),
+    });
+  }
   // get buyer fid
-  // const fid = validation.message.interactor.fid;
-  const fid = 7963;
+  const fid = validation.message.interactor.fid;
   if (!fid) {
     console.info("No FID");
     return getFrameHtmlResponse({

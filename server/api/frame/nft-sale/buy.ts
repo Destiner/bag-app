@@ -104,6 +104,6 @@ export default defineEventHandler(async (event) => {
         action: "post_redirect",
       },
     ],
-    post_url: `${baseUrl}/explore/address/${buyerAddress}`,
+    post_url: `${baseUrl}/explore/nft/${buyerAddress}`,
   });
 });

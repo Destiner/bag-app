@@ -261,15 +261,26 @@ async function getWarpcastProfile(username: string): Promise<WarpcastProfile> {
   return profile;
 }
 
-async function execute(
+async function getGasPrices(pimlicoApiKey: string) {
+  const chainName = chain.name.toLowerCase();
+
+  const bundlerClient = createPimlicoBundlerClient({
+    transport: http(
+      `https://api.pimlico.io/v1/${chainName}/rpc?apikey=${pimlicoApiKey}`
+    ),
+  });
+
+  const gasPrices = await bundlerClient.getUserOperationGasPrice();
+
+  return gasPrices;
+}
+
+async function getSmartAccountClient(
   pimlicoApiKey: string,
   privateKey: Hex,
   fid: number,
-  to: Address,
-  data: Hex,
-  value: bigint,
   sponsorshipPolicyId?: string
-): Promise<string | null> {
+) {
   const chainName = chain.name.toLowerCase();
 
   const publicClient = createPublicClient({
@@ -281,14 +292,6 @@ async function execute(
       `https://api.pimlico.io/v2/${chainName}/rpc?apikey=${pimlicoApiKey}`
     ),
   }).extend(pimlicoPaymasterActions);
-
-  const bundlerClient = createPimlicoBundlerClient({
-    transport: http(
-      `https://api.pimlico.io/v1/${chainName}/rpc?apikey=${pimlicoApiKey}`
-    ),
-  });
-
-  const gasPrices = await bundlerClient.getUserOperationGasPrice();
 
   const safeAccount = await privateKeyToSafeSmartAccount(publicClient, {
     privateKey: privateKey,
@@ -313,11 +316,61 @@ async function execute(
     },
   });
 
+  return smartAccountClient;
+}
+
+async function execute(
+  pimlicoApiKey: string,
+  privateKey: Hex,
+  fid: number,
+  to: Address,
+  data: Hex,
+  value: bigint,
+  sponsorshipPolicyId?: string
+): Promise<string | null> {
+  const smartAccountClient = await getSmartAccountClient(
+    pimlicoApiKey,
+    privateKey,
+    fid,
+    sponsorshipPolicyId
+  );
+  const gasPrices = await getGasPrices(pimlicoApiKey);
   try {
     const txHash = await smartAccountClient.sendTransaction({
       to,
       data,
       value,
+      maxFeePerGas: gasPrices.fast.maxFeePerGas,
+      maxPriorityFeePerGas: gasPrices.fast.maxPriorityFeePerGas,
+    });
+
+    return txHash;
+  } catch {
+    return null;
+  }
+}
+
+async function multiExecute(
+  pimlicoApiKey: string,
+  privateKey: Hex,
+  fid: number,
+  transactions: {
+    to: Address;
+    data: Hex;
+    value: bigint;
+  }[],
+  sponsorshipPolicyId?: string
+): Promise<string | null> {
+  const smartAccountClient = await getSmartAccountClient(
+    pimlicoApiKey,
+    privateKey,
+    fid,
+    sponsorshipPolicyId
+  );
+  const gasPrices = await getGasPrices(pimlicoApiKey);
+  try {
+    const txHash = await smartAccountClient.sendTransactions({
+      transactions,
       maxFeePerGas: gasPrices.fast.maxFeePerGas,
       maxPriorityFeePerGas: gasPrices.fast.maxPriorityFeePerGas,
     });
@@ -358,6 +411,7 @@ export {
   getWarpcastProfile,
   getErc20TransferData,
   execute,
+  multiExecute,
   getErrorImageUrl,
 };
 export type { FrameRequestBody };

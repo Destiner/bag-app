@@ -14,6 +14,11 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   nitro: {
+    vercel: {
+      functions: {
+        maxDuration: 300,
+      },
+    },
     rollupConfig: {
       // @ts-ignore
       plugins: [

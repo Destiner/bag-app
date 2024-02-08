@@ -345,7 +345,8 @@ async function execute(
     });
 
     return txHash;
-  } catch {
+  } catch (e) {
+    console.error("Error executing tx", e);
     return null;
   }
 }
@@ -376,7 +377,8 @@ async function multiExecute(
     });
 
     return txHash;
-  } catch {
+  } catch (e) {
+    console.error("Error executing tx", e);
     return null;
   }
 }

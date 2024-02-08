@@ -109,7 +109,7 @@ export default defineEventHandler(async (event) => {
       image: getErrorImageUrl(baseUrl, "Nothing to claim"),
     });
   }
-  multiExecute(pimlicoApiKey, privateKey, fid, txs, "sp_demonic_tarantula");
+  multiExecute(pimlicoApiKey, privateKey, fid, txs);
   console.info("Claimed");
   // show success frame
   return getFrameHtmlResponse({

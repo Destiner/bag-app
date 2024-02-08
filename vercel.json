@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "server/api/frame/claim-all/claim.ts": {
+      "maxDuration": 300
+    }
+  }
+}

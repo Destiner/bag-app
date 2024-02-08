@@ -8,8 +8,13 @@
       align-items: center;
       justify-content: center;
       font-size: 40px;
+      gap: 20px;
+      flex-direction: column;
     "
   >
-    claimed
+    <div style="display: flex">claimed</div>
+    <div style="display: flex; font-size: 32px; color: #777">
+      (the network is busy: it might take a few minutes to process)
+    </div>
   </div>
 </template>

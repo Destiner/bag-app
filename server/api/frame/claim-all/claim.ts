@@ -120,6 +120,6 @@ export default defineEventHandler(async (event) => {
         action: "post_redirect",
       },
     ],
-    post_url: `${baseUrl}/explore/transfer/${bagAddress}/${mainAddress}`,
+    post_url: `${baseUrl}/explore/vote/${bagAddress}`,
   });
 });

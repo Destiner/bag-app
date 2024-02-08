@@ -1,6 +1,6 @@
 {
   "functions": {
-    "frame/claim-all/claim.ts": {
+    "**/*": {
       "maxDuration": 300
     }
   }

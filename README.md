@@ -1,6 +1,23 @@
-# Nuxt 3 Minimal Starter
+# Onchain Farcaster Frames
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This is a directory of onchain frames. Each frame triggers an onchain transaction sourced from the user's Safe.
+
+Using `onchain` to build frames, `permissionless` to run smart accounts, and `Pimlico` to send bundles.
+
+## Bag
+
+Bag is a Safe wallet controlled via frames. Each FID (Farcaster ID) maps to a single address, bringing an onchain Safe wallet to every Farcaster user. Users are then able to execute transactions from the bags they control using different frames.
+
+## Frames
+
+There are 6 frames in total in this repo.
+
+* `bag-claim`: a frame that mints a free "Bag" NFT to the user
+* `claim-all`: a frame that sends all tokens from the bag wallet
+* `degen-raffle`: a frame that distributes a random amount of $DEGEN to each user
+* `nft-sale`: a frame that sells an NFT for a small amount of $DEGEN
+* `poll`: a simple onchain voting app that uses [EAS](https://attest.sh)
+* `tips`: a tipping app
 
 ## Setup
 
@@ -9,15 +26,6 @@ Make sure to install the dependencies:
 ```bash
 # npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
 ## Development Server
@@ -27,15 +35,6 @@ Start the development server on `http://localhost:3000`:
 ```bash
 # npm
 npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
 ## Production
@@ -45,15 +44,6 @@ Build the application for production:
 ```bash
 # npm
 npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
 Locally preview production build:

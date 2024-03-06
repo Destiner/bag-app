@@ -1,4 +1,3 @@
-import { kv } from "@vercel/kv";
 import { getFrameMessage, getFrameHtmlResponse } from "@coinbase/onchainkit";
 import type { FrameRequest } from "@coinbase/onchainkit";
 import { type Hex, Address, formatEther, parseEther } from "viem";
@@ -52,31 +51,8 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const isClaimed = await kv.get<boolean>(
-    `token-claim-${tokenAddress}-${bagAddress}`
-  );
-  if (isClaimed) {
-    console.info("Already claimed");
-    return getFrameHtmlResponse({
-      buttons: [
-        {
-          label: "Show Wallet",
-          action: "link",
-          target: `https://basescan.org/address/${mainAddress}#tokentxns`,
-        },
-      ],
-      image: getImageUrl(
-        baseUrl,
-        "Already claimed",
-        "You have already claimed this token",
-        "Try another account or come back later"
-      ),
-    });
-  }
-
   const tokenBalance = await getTokenBalance(bagAddress, tokenAddress);
   if (tokenBalance === BigInt(0)) {
-    kv.set(`token-claim-${tokenAddress}-${bagAddress}`, true);
     console.info("No $DOG");
     return getFrameHtmlResponse({
       buttons: [

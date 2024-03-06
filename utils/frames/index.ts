@@ -1,17 +1,28 @@
-import { privateKeyToSafeSmartAccount } from "permissionless/accounts";
+import {
+  privateKeyToSafeSmartAccount,
+  signerToSafeSmartAccount,
+} from "permissionless/accounts";
+import {
+  pimlicoBundlerActions,
+  pimlicoPaymasterActions,
+} from "permissionless/actions/pimlico";
+import {
+  ENTRYPOINT_ADDRESS_V06,
+  bundlerActions,
+  createSmartAccountClient,
+} from "permissionless";
 import type { Address, Hex } from "viem";
-import { createPublicClient, createWalletClient, http } from "viem";
-import { mnemonicToAccount } from "viem/accounts";
+import {
+  createClient,
+  createPublicClient,
+  createWalletClient,
+  http,
+} from "viem";
+import { mnemonicToAccount, privateKeyToAccount } from "viem/accounts";
 import { base } from "viem/chains";
 
 import erc20Abi from "@/assets/abi/erc20";
-import zoraErc1155Abi from "~/assets/abi/zoraErc1155Minter";
-import {
-  createPimlicoBundlerClient,
-  createPimlicoPaymasterClient,
-} from "permissionless/clients/pimlico";
-import { pimlicoPaymasterActions } from "permissionless/actions/pimlico";
-import { createSmartAccountClient } from "permissionless";
+import zoraErc1155Abi from "@/assets/abi/zoraErc1155Minter";
 
 type FidResponse = {
   verifications: string[];
@@ -263,57 +274,44 @@ async function getWarpcastProfile(username: string): Promise<WarpcastProfile> {
 
 async function getGasPrices(pimlicoApiKey: string) {
   const chainName = chain.name.toLowerCase();
-
-  const bundlerClient = createPimlicoBundlerClient({
+  const pimlicoBundlerClient = createClient({
+    chain,
     transport: http(
-      `https://api.pimlico.io/v1/${chainName}/rpc?apikey=${pimlicoApiKey}`
+      `https://api.pimlico.io/v2/${chainName}/rpc?apikey=${pimlicoApiKey}`
     ),
-  });
-
-  const gasPrices = await bundlerClient.getUserOperationGasPrice();
-
+  })
+    .extend(bundlerActions(ENTRYPOINT_ADDRESS_V06))
+    .extend(pimlicoBundlerActions(ENTRYPOINT_ADDRESS_V06));
+  const gasPrices = await pimlicoBundlerClient.getUserOperationGasPrice();
   return gasPrices;
 }
 
 async function getSmartAccountClient(
   pimlicoApiKey: string,
   privateKey: Hex,
-  fid: number,
-  sponsorshipPolicyId?: string
+  fid: number
 ) {
-  const chainName = chain.name.toLowerCase();
-
+  const chainName = base.name.toLowerCase();
   const publicClient = createPublicClient({
     transport: http(chain.rpcUrls.default.http[0]),
   });
 
-  const paymasterClient = createPimlicoPaymasterClient({
-    transport: http(
-      `https://api.pimlico.io/v2/${chainName}/rpc?apikey=${pimlicoApiKey}`
-    ),
-  }).extend(pimlicoPaymasterActions);
+  const signer = privateKeyToAccount(privateKey);
 
-  const safeAccount = await privateKeyToSafeSmartAccount(publicClient, {
-    privateKey: privateKey,
-    safeVersion: "1.4.1",
+  const safeAccount = await signerToSafeSmartAccount(publicClient, {
     entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+    signer: signer,
+    safeVersion: "1.4.1",
     saltNonce: BigInt(fid),
   });
 
   const smartAccountClient = createSmartAccountClient({
     account: safeAccount,
-    chain: chain,
-    transport: http(
-      `https://api.pimlico.io/v1/${chainName}/rpc?apikey=${pimlicoApiKey}`
+    entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+    chain: base,
+    bundlerTransport: http(
+      `https://api.pimlico.io/v2/${chainName}/rpc?apikey=${pimlicoApiKey}`
     ),
-    sponsorUserOperation: async (args) => {
-      const response = await paymasterClient.sponsorUserOperation({
-        userOperation: args.userOperation,
-        entryPoint: args.entryPoint,
-        sponsorshipPolicyId: sponsorshipPolicyId || "sp_base_frame",
-      });
-      return response;
-    },
   });
 
   return smartAccountClient;
@@ -331,8 +329,7 @@ async function execute(
   const smartAccountClient = await getSmartAccountClient(
     pimlicoApiKey,
     privateKey,
-    fid,
-    sponsorshipPolicyId
+    fid
   );
   const gasPrices = await getGasPrices(pimlicoApiKey);
   try {
@@ -359,14 +356,12 @@ async function multiExecute(
     to: Address;
     data: Hex;
     value: bigint;
-  }[],
-  sponsorshipPolicyId?: string
+  }[]
 ): Promise<string | null> {
   const smartAccountClient = await getSmartAccountClient(
     pimlicoApiKey,
     privateKey,
-    fid,
-    sponsorshipPolicyId
+    fid
   );
   const gasPrices = await getGasPrices(pimlicoApiKey);
   try {
@@ -381,6 +376,72 @@ async function multiExecute(
     console.error("Error executing tx", e);
     return null;
   }
+}
+
+async function multiExecuteBiconomy(
+  biconomyPaymasterApi: string,
+  pimlicoApiKey: string,
+  privateKey: Hex,
+  fid: number,
+  transactions: {
+    to: Address;
+    data: Hex;
+    value: bigint;
+  }[]
+) {
+  const chainName = base.name.toLowerCase();
+  const publicClient = createPublicClient({
+    transport: http(chain.rpcUrls.default.http[0]),
+  });
+
+  const signer = privateKeyToAccount(privateKey);
+
+  const safeAccount = await signerToSafeSmartAccount(publicClient, {
+    entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+    signer: signer,
+    safeVersion: "1.4.1",
+    saltNonce: BigInt(fid),
+  });
+
+  const bundlerClient = createClient({
+    chain: base,
+    transport: http(
+      `https://api.pimlico.io/v2/${chainName}/rpc?apikey=${pimlicoApiKey}`
+    ),
+  })
+    .extend(bundlerActions(ENTRYPOINT_ADDRESS_V06))
+    .extend(pimlicoBundlerActions(ENTRYPOINT_ADDRESS_V06));
+
+  console.log("Execute with Biconomy 1: bundler client");
+
+  const biconomyPaymasterClient = createPublicClient({
+    transport: http(biconomyPaymasterApi),
+  }).extend(pimlicoPaymasterActions(ENTRYPOINT_ADDRESS_V06));
+
+  console.log("Execute with Biconomy 2: paymaster client");
+
+  const smartAccountClient = createSmartAccountClient({
+    account: safeAccount,
+    entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+    chain: base,
+    bundlerTransport: http(
+      `https://api.pimlico.io/v2/${chainName}/rpc?apikey=${pimlicoApiKey}`
+    ),
+    middleware: {
+      gasPrice: async () => {
+        return (await bundlerClient.getUserOperationGasPrice()).fast;
+      },
+      sponsorUserOperation: biconomyPaymasterClient.sponsorUserOperation,
+    },
+  });
+
+  console.log("Execute with Biconomy 3: smart account client");
+
+  const txHash = await smartAccountClient.sendTransactions({
+    transactions,
+  });
+
+  console.log("Execute with Biconomy 4: sent tx", txHash);
 }
 
 function getErc20TransferData(to: string, amount: bigint): Hex {
@@ -415,5 +476,6 @@ export {
   execute,
   multiExecute,
   getErrorImageUrl,
+  multiExecuteBiconomy,
 };
 export type { FrameRequestBody };

@@ -7,7 +7,7 @@ import {
   getWalletAddress,
   getErrorImageUrl,
   getTokenBalance,
-  multiExecute,
+  multiExecuteBiconomy,
   getErc20TransferData,
 } from "~/utils/frames";
 
@@ -15,6 +15,7 @@ const config = useRuntimeConfig();
 
 const baseUrl = config.public.baseUrl as string;
 const neynarApiKey = config.neynarApiKey as string;
+const biconomyPaymasterApi = config.biconomyPaymasterApi as string;
 const privateKey = config.aaPrivateKey as Hex;
 const pimlicoApiKey = config.pimlicoApiKey as string;
 
@@ -93,7 +94,13 @@ export default defineEventHandler(async (event) => {
       value: BigInt(0),
     },
   ];
-  multiExecute(pimlicoApiKey, privateKey, fid, txs);
+  multiExecuteBiconomy(
+    biconomyPaymasterApi,
+    pimlicoApiKey,
+    privateKey,
+    fid,
+    txs
+  );
   console.info("Claimed");
   // show success frame
   return getFrameHtmlResponse({

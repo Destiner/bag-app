@@ -35,6 +35,7 @@ export default defineEventHandler(async (event) => {
       image: getErrorImageUrl(baseUrl, "Invalid message"),
     });
   }
+  console.info("Validated");
   // get buyer fid
   const fid = validation.message.interactor.fid;
   if (!fid) {

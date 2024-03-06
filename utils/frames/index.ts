@@ -435,6 +435,9 @@ async function multiExecuteBiconomy(
       `https://api.pimlico.io/v2/${chainName}/rpc?apikey=${pimlicoApiKey}`
     ),
     middleware: {
+      gasPrice: async () => {
+        return (await bundlerClient.getUserOperationGasPrice()).fast;
+      },
       sponsorUserOperation: async ({ userOperation, entryPoint }) => {
         if (entryPoint === ENTRYPOINT_ADDRESS_V06) {
           const paymasterAndData = await biconomyPaymaster.getPaymasterAndData(

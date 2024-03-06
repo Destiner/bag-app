@@ -20,7 +20,7 @@
     "@coinbase/onchainkit": "^0.5.1",
     "@ethereum-attestation-service/eas-sdk": "^1.4.1",
     "axios": "^1.6.7",
-    "permissionless": "^0.0.35",
+    "permissionless": "^0.1.6",
     "sharp": "^0.32.6",
     "v-satori": "^0.2.0",
     "viem": "^2.7.1"

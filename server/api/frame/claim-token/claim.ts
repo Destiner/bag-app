@@ -104,7 +104,7 @@ export default defineEventHandler(async (event) => {
       {
         label: "View Transaction",
         action: "link",
-        target: `https://basescan.org/address/${mainAddress}`,
+        target: `https://basescan.org/address/${mainAddress}#tokentxns`,
       },
     ],
   });

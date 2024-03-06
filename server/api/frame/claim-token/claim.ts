@@ -23,7 +23,7 @@ const pimlicoApiKey = config.pimlicoApiKey as string;
 const adminAddress = "0xa75a19Cae746f1058d3217Cb6367effD93c73B53";
 const tokenAddress = "0xAfb89a09D82FBDE58f18Ac6437B3fC81724e4dF6";
 const FEE_DENOMINATOR = BigInt(5); // 20%
-const minAmount = parseEther("3500");
+const minAmount = parseEther("4000");
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<FrameRequest>(event);

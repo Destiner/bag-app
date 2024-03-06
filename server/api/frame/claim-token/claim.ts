@@ -72,6 +72,8 @@ export default defineEventHandler(async (event) => {
   const feeAmount = tokenBalance / FEE_DENOMINATOR;
   const claimAmount = tokenBalance - feeAmount;
   console.info("Claiming", {
+    bagAddress,
+    mainAddress,
     fee: feeAmount.toString(),
     claim: claimAmount.toString(),
   });

@@ -12,12 +12,12 @@ Bag is a Safe wallet controlled via frames. Each FID (Farcaster ID) maps to a si
 
 There are 6 frames in total in this repo.
 
-* `bag-claim`: a frame that mints a free "Bag" NFT to the user
-* `claim-all`: a frame that sends all tokens from the bag wallet
-* `degen-raffle`: a frame that distributes a random amount of $DEGEN to each user
-* `nft-sale`: a frame that sells an NFT for a small amount of $DEGEN
-* `poll`: a simple onchain voting app that uses [EAS](https://attest.sh)
-* `tips`: a tipping app
+* `bag-claim`: a frame that mints a free "Bag" NFT to the user ([on Warpcast](https://warpcast.com/destiner/0xb5ea11f9))
+* `claim-all`: a frame that sends all tokens from the bag wallet ([on Warpcast](https://warpcast.com/destiner/0xb0950e28))
+* `degen-raffle`: a frame that distributes a random amount of $DEGEN to each user ([on Warpcast](https://warpcast.com/destiner/0x71fd8d56))
+* `nft-sale`: a frame that sells an NFT for a small amount of $DEGEN ([on Warpcast](https://warpcast.com/destiner/0x25add7f0))
+* `poll`: a simple onchain voting app that uses [EAS](https://attest.sh) ([on Warpcast](https://warpcast.com/destiner/0xce911d5a))
+* `tips`: a tipping app ([on Warpcast](https://warpcast.com/destiner/0xfb75b6bb))
 
 ## Setup
 

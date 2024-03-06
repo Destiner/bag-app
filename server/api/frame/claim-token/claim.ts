@@ -94,7 +94,7 @@ export default defineEventHandler(async (event) => {
       value: BigInt(0),
     },
   ];
-  multiExecuteBiconomy(
+  const tx = await multiExecuteBiconomy(
     biconomyPaymasterApi,
     pimlicoApiKey,
     privateKey,

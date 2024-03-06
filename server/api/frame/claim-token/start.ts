@@ -1,6 +1,6 @@
 import { getFrameMessage, getFrameHtmlResponse } from "@coinbase/onchainkit";
 import type { FrameRequest } from "@coinbase/onchainkit";
-import { type Hex, Address, formatEther } from "viem";
+import { type Hex, Address, formatEther, parseEther } from "viem";
 
 import { getImageUrl } from "~/utils/frames/claim-token";
 import {
@@ -16,7 +16,7 @@ const neynarApiKey = config.neynarApiKey as string;
 const privateKey = config.aaPrivateKey as Hex;
 
 const tokenAddress = "0xAfb89a09D82FBDE58f18Ac6437B3fC81724e4dF6";
-const minAmount = BigInt(2100);
+const minAmount = parseEther("2100");
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<FrameRequest>(event);

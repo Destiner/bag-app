@@ -1,6 +1,6 @@
 import { getFrameMessage, getFrameHtmlResponse } from "@coinbase/onchainkit";
 import type { FrameRequest } from "@coinbase/onchainkit";
-import { type Hex, Address } from "viem";
+import { parseEther type Hex, Address, formatEther } from "viem";
 
 import { getImageUrl } from "~/utils/frames/claim-token";
 import {
@@ -68,44 +68,15 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const feeAmount = tokenBalance / FEE_DENOMINATOR;
-  const claimAmount = tokenBalance - feeAmount;
-  console.info("Claiming", {
-    fee: feeAmount.toString(),
-    claim: claimAmount.toString(),
-  });
-  const txs: {
-    to: Address;
-    data: Hex;
-    value: bigint;
-  }[] = [
-    {
-      to: tokenAddress,
-      data: getErc20TransferData(adminAddress, feeAmount),
-      value: BigInt(0),
-    },
-    {
-      to: tokenAddress,
-      data: getErc20TransferData(mainAddress, claimAmount),
-      value: BigInt(0),
-    },
-  ];
-  multiExecute(pimlicoApiKey, privateKey, fid, txs);
-  console.info("Claimed");
-  // show success frame
+  const balanceString = formatEther(tokenBalance)
   return getFrameHtmlResponse({
-    image: getImageUrl(
-      baseUrl,
-      "Success!",
-      "claimed $DOG",
-      "might take a few minutes; retry later if needed"
-    ),
+    image: getImageUrl(baseUrl, `${balanceString} $DOG`, "your balance", '20% fee is applied to cover gas fees and dev costs'),
     buttons: [
       {
-        label: "View Transaction",
-        action: "link",
-        target: `https://basescan.org/address/${mainAddress}`,
+        label: "Claim",
+        action: "post",
       },
     ],
+    post_url: `${baseUrl}/api/frame/claim-token/claim`,
   });
 });

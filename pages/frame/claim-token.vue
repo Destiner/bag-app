@@ -19,7 +19,7 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   image: imageUrl,
-  post_url: `${baseUrl}/api/frame/claim-token/claim`,
+  post_url: `${baseUrl}/api/frame/claim-token/start`,
 });
 
 const frameTags = Object.entries(frameMetadata).map(([key, value]) => ({

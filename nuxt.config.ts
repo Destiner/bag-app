@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   nitro: {
     vercel: {
       functions: {
-        maxDuration: 300,
+        maxDuration: 10,
       },
     },
     rollupConfig: {

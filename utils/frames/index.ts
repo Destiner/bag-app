@@ -438,7 +438,7 @@ async function multiExecuteBiconomy(
       sponsorUserOperation: async ({ userOperation, entryPoint }) => {
         if (entryPoint === ENTRYPOINT_ADDRESS_V06) {
           const paymasterAndData = await biconomyPaymaster.getPaymasterAndData(
-            userOp
+            userOperation
           );
           return {
             callGasLimit: BigInt(paymasterAndData.callGasLimit),
@@ -458,22 +458,12 @@ async function multiExecuteBiconomy(
     },
   });
 
-  console.log("Execute with Biconomy 4: prepare user op");
-  smartAccountClient.sendUserOperation;
-  const userOp = await smartAccountClient.prepareUserOperationRequest({
-    userOperation: {
-      callData: transactions[0].data,
-    },
+  console.log("Execute with Biconomy 4: send transactions");
+  const txHash = await smartAccountClient.sendTransactions({
+    transactions,
   });
-  // const feeQuotesOrData = await biconomyPaymaster.getPaymasterFeeQuotesOrData(userOp, {})
-  console.log("Execute with Biconomy 5: get paymaster and data");
-  const paymasterAndData = await biconomyPaymaster.getPaymasterAndData(userOp);
-  console.log("Paymaster and data", paymasterAndData);
-  userOp.paymasterAndData = paymasterAndData.paymasterAndData;
-  userOp.preVerificationGas = BigInt(paymasterAndData.preVerificationGas);
-  userOp.verificationGasLimit = BigInt(paymasterAndData.verificationGasLimit);
-  userOp.callGasLimit = BigInt(paymasterAndData.callGasLimit);
-  console.log("User op", userOp);
+  console.log("Execute with Biconomy 5: tx hash", txHash);
+  return txHash;
 }
 
 function getErc20TransferData(to: string, amount: bigint): Hex {

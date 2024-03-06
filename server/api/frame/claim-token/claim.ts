@@ -1,7 +1,7 @@
 import { kv } from "@vercel/kv";
 import { getFrameMessage, getFrameHtmlResponse } from "@coinbase/onchainkit";
 import type { FrameRequest } from "@coinbase/onchainkit";
-import { type Hex, Address } from "viem";
+import { type Hex, Address, parseEther } from "viem";
 
 import { getImageUrl } from "~/utils/frames/claim-token";
 import {
@@ -23,6 +23,7 @@ const pimlicoApiKey = config.pimlicoApiKey as string;
 const adminAddress = "0xa75a19Cae746f1058d3217Cb6367effD93c73B53";
 const tokenAddress = "0xAfb89a09D82FBDE58f18Ac6437B3fC81724e4dF6";
 const FEE_DENOMINATOR = BigInt(5); // 20%
+const minAmount = parseEther("3500");
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<FrameRequest>(event);
@@ -96,6 +97,18 @@ export default defineEventHandler(async (event) => {
         "No $DOG",
         "nothing to claim",
         "check your wallet if you have already claimed"
+      ),
+    });
+  }
+
+  if (tokenBalance < minAmount) {
+    console.info("Not enough $DOG");
+    return getFrameHtmlResponse({
+      image: getImageUrl(
+        baseUrl,
+        "Not enough $DOG",
+        "The amount is too low",
+        "try another account or come back later"
       ),
     });
   }

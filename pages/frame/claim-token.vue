@@ -14,7 +14,7 @@ const imageUrl = getImageUrl(baseUrl, "claim $DOG", "from bag wallet");
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: "Claim",
+      label: "Check",
       action: "post",
     },
   ],

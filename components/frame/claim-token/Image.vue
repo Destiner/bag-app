@@ -24,6 +24,7 @@
     >
       <div
         style="
+          display: flex;
           color: white;
           font-size: 40;
           font-style: bold;
@@ -37,6 +38,7 @@
       </div>
       <div
         style="
+          display: flex;
           color: #ababab;
           font-size: 40;
           font-style: normal;
@@ -51,6 +53,7 @@
     </div>
     <div
       style="
+        display: flex;
         color: #818181;
         font-size: 32;
         margin-bottom: 40px;

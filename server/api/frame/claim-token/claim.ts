@@ -1,14 +1,12 @@
 import { getFrameMessage, getFrameHtmlResponse } from "@coinbase/onchainkit";
 import type { FrameRequest } from "@coinbase/onchainkit";
-import { parseEther, type Hex, Address } from "viem";
+import { type Hex, Address } from "viem";
 
 import { getImageUrl } from "~/utils/frames/claim-token";
 import {
-  execute,
   getWalletAddress,
   getErrorImageUrl,
   getTokenBalance,
-  getNftBalance,
   multiExecute,
   getErc20TransferData,
 } from "~/utils/frames";

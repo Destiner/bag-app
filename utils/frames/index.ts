@@ -1,3 +1,4 @@
+import { createPaymaster as createBiconomyPaymaster } from "@biconomy/account";
 import {
   privateKeyToSafeSmartAccount,
   signerToSafeSmartAccount,
@@ -420,6 +421,12 @@ async function multiExecuteBiconomy(
 
   console.log("Execute with Biconomy 2: paymaster client");
 
+  const biconomyPaymaster = await createBiconomyPaymaster({
+    paymasterUrl: biconomyPaymasterApi,
+  });
+
+  console.log("Execute with Biconomy 3: smart account client");
+
   const smartAccountClient = createSmartAccountClient({
     account: safeAccount,
     entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
@@ -427,21 +434,23 @@ async function multiExecuteBiconomy(
     bundlerTransport: http(
       `https://api.pimlico.io/v2/${chainName}/rpc?apikey=${pimlicoApiKey}`
     ),
-    middleware: {
-      gasPrice: async () => {
-        return (await bundlerClient.getUserOperationGasPrice()).fast;
-      },
-      sponsorUserOperation: biconomyPaymasterClient.sponsorUserOperation,
+  });
+
+  console.log("Execute with Biconomy 4: prepare user op");
+  const userOp = await smartAccountClient.prepareUserOperationRequest({
+    userOperation: {
+      callData: transactions[0].data,
     },
   });
-
-  console.log("Execute with Biconomy 3: smart account client");
-
-  const txHash = await smartAccountClient.sendTransactions({
-    transactions,
-  });
-
-  console.log("Execute with Biconomy 4: sent tx", txHash);
+  // const feeQuotesOrData = await biconomyPaymaster.getPaymasterFeeQuotesOrData(userOp, {})
+  console.log("Execute with Biconomy 5: get paymaster and data");
+  const paymasterAndData = await biconomyPaymaster.getPaymasterAndData(userOp);
+  console.log("Paymaster and data", paymasterAndData);
+  userOp.paymasterAndData = paymasterAndData.paymasterAndData;
+  userOp.preVerificationGas = BigInt(paymasterAndData.preVerificationGas);
+  userOp.verificationGasLimit = BigInt(paymasterAndData.verificationGasLimit);
+  userOp.callGasLimit = BigInt(paymasterAndData.callGasLimit);
+  console.log("User op", userOp);
 }
 
 function getErc20TransferData(to: string, amount: bigint): Hex {

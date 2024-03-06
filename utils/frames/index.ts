@@ -444,7 +444,25 @@ async function multiExecuteBiconomy(
       sponsorUserOperation: async ({ userOperation, entryPoint }) => {
         if (entryPoint === ENTRYPOINT_ADDRESS_V06) {
           const paymasterAndData = await biconomyPaymaster.getPaymasterAndData(
-            userOperation,
+            {
+              sender: userOperation.sender,
+              nonce: `0x${userOperation.nonce.toString(16)}`,
+              initCode: userOperation.initCode,
+              callData: userOperation.callData,
+              callGasLimit: `0x${userOperation.callGasLimit.toString(16)}`,
+              verificationGasLimit: `0x${userOperation.verificationGasLimit.toString(
+                16
+              )}`,
+              preVerificationGas: `0x${userOperation.preVerificationGas.toString(
+                16
+              )}`,
+              maxFeePerGas: `0x${userOperation.maxFeePerGas.toString(16)}`,
+              maxPriorityFeePerGas: `0x${userOperation.maxPriorityFeePerGas.toString(
+                16
+              )}`,
+              paymasterAndData: userOperation.paymasterAndData,
+              signature: userOperation.signature,
+            },
             {
               mode: PaymasterMode.SPONSORED,
             }

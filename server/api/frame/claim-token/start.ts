@@ -68,7 +68,8 @@ export default defineEventHandler(async (event) => {
       image: getImageUrl(
         baseUrl,
         "Already claimed",
-        "You have already claimed this token using this wallet"
+        "You have already claimed this token",
+        "Try another account or come back later"
       ),
     });
   }
@@ -78,6 +79,13 @@ export default defineEventHandler(async (event) => {
     kv.set(`token-claim-${tokenAddress}-${bagAddress}`, true);
     console.info("No $DOG");
     return getFrameHtmlResponse({
+      buttons: [
+        {
+          label: "Show Wallet",
+          action: "link",
+          target: `https://basescan.org/address/${mainAddress}#tokentxns`,
+        },
+      ],
       image: getImageUrl(
         baseUrl,
         "No $DOG",

@@ -439,9 +439,11 @@ async function multiExecuteBiconomy(
     ),
     middleware: {
       gasPrice: async () => {
+        console.log("Execute with Biconomy 5: gas price");
         return (await bundlerClient.getUserOperationGasPrice()).fast;
       },
       sponsorUserOperation: async ({ userOperation, entryPoint }) => {
+        console.log("Execute with Biconomy 6: paymaster sponsorship");
         if (entryPoint === ENTRYPOINT_ADDRESS_V06) {
           const paymasterAndData = await biconomyPaymaster.getPaymasterAndData(
             {
@@ -489,7 +491,6 @@ async function multiExecuteBiconomy(
   const txHash = await smartAccountClient.sendTransactions({
     transactions,
   });
-  console.log("Execute with Biconomy 5: tx hash", txHash);
   return txHash;
 }
 

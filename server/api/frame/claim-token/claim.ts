@@ -20,7 +20,7 @@ const privateKey = config.aaPrivateKey as Hex;
 const pimlicoApiKey = config.pimlicoApiKey as string;
 
 const adminAddress = "0xa75a19Cae746f1058d3217Cb6367effD93c73B53";
-const tokenAddress = "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed";
+const tokenAddress = "0xAfb89a09D82FBDE58f18Ac6437B3fC81724e4dF6";
 const FEE_DENOMINATOR = BigInt(5); // 20%
 
 export default defineEventHandler(async (event) => {
@@ -61,11 +61,18 @@ export default defineEventHandler(async (event) => {
   if (tokenBalance === BigInt(0)) {
     console.info("No $DOG");
     return getFrameHtmlResponse({
+      buttons: [
+        {
+          label: "Show Wallet",
+          action: "link",
+          target: `https://basescan.org/address/${mainAddress}#tokentxns`,
+        },
+      ],
       image: getImageUrl(
         baseUrl,
         "No $DOG",
         "nothing to claim",
-        "try another account or come back later"
+        "check your wallet if you have already claimed"
       ),
     });
   }
@@ -94,7 +101,7 @@ export default defineEventHandler(async (event) => {
       value: BigInt(0),
     },
   ];
-  const tx = await multiExecuteBiconomy(
+  await multiExecuteBiconomy(
     biconomyPaymasterApi,
     pimlicoApiKey,
     privateKey,

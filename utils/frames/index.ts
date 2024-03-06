@@ -1,4 +1,7 @@
-import { createPaymaster as createBiconomyPaymaster } from "@biconomy/account";
+import {
+  PaymasterMode,
+  createPaymaster as createBiconomyPaymaster,
+} from "@biconomy/account";
 import {
   privateKeyToSafeSmartAccount,
   signerToSafeSmartAccount,
@@ -441,7 +444,10 @@ async function multiExecuteBiconomy(
       sponsorUserOperation: async ({ userOperation, entryPoint }) => {
         if (entryPoint === ENTRYPOINT_ADDRESS_V06) {
           const paymasterAndData = await biconomyPaymaster.getPaymasterAndData(
-            userOperation
+            userOperation,
+            {
+              mode: PaymasterMode.SPONSORED,
+            }
           );
           return {
             callGasLimit: BigInt(paymasterAndData.callGasLimit),

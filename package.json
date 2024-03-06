@@ -17,6 +17,7 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@biconomy/account": "^4.0.2",
     "@coinbase/onchainkit": "^0.5.1",
     "@ethereum-attestation-service/eas-sdk": "^1.4.1",
     "axios": "^1.6.7",

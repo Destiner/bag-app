@@ -434,9 +434,32 @@ async function multiExecuteBiconomy(
     bundlerTransport: http(
       `https://api.pimlico.io/v2/${chainName}/rpc?apikey=${pimlicoApiKey}`
     ),
+    middleware: {
+      sponsorUserOperation: async ({ userOperation, entryPoint }) => {
+        if (entryPoint === ENTRYPOINT_ADDRESS_V06) {
+          const paymasterAndData = await biconomyPaymaster.getPaymasterAndData(
+            userOp
+          );
+          return {
+            callGasLimit: BigInt(paymasterAndData.callGasLimit),
+            verificationGasLimit: BigInt(paymasterAndData.verificationGasLimit),
+            preVerificationGas: BigInt(paymasterAndData.preVerificationGas),
+            paymasterAndData: paymasterAndData.paymasterAndData,
+          };
+        } else {
+          return {
+            callGasLimit: userOperation.callGasLimit,
+            verificationGasLimit: userOperation.verificationGasLimit,
+            preVerificationGas: userOperation.preVerificationGas,
+            paymasterAndData: userOperation.paymasterAndData,
+          };
+        }
+      },
+    },
   });
 
   console.log("Execute with Biconomy 4: prepare user op");
+  smartAccountClient.sendUserOperation;
   const userOp = await smartAccountClient.prepareUserOperationRequest({
     userOperation: {
       callData: transactions[0].data,

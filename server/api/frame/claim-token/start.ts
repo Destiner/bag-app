@@ -89,7 +89,7 @@ export default defineEventHandler(async (event) => {
       baseUrl,
       `${balanceString} $DOG`,
       "your balance",
-      "20% fee is applied to cover gas fees and dev costs"
+      "10% fee is applied to cover gas fees"
     ),
     buttons: [
       {

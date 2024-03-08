@@ -9,7 +9,12 @@ const config = useRuntimeConfig();
 
 const baseUrl = config.public.baseUrl as string;
 
-const imageUrl = getImageUrl(baseUrl, "claim $DOG", "from bag wallet");
+const imageUrl = getImageUrl(
+  baseUrl,
+  "claim $DOG",
+  "from your bag wallet",
+  "limited offer, ending soon"
+);
 
 const frameMetadata = getFrameMetadata({
   buttons: [

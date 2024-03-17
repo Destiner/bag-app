@@ -13,18 +13,18 @@ const imageUrl = getImageUrl(
   baseUrl,
   "claim $DOG",
   "from your bag wallet",
-  "limited offer, ending soon"
+  "the claiming period ended!"
 );
 
 const frameMetadata = getFrameMetadata({
-  buttons: [
-    {
-      label: "Check",
-      action: "post",
-    },
-  ],
+  // buttons: [
+  //   {
+  //     label: "Check",
+  //     action: "post",
+  //   },
+  // ],
   image: imageUrl,
-  post_url: `${baseUrl}/api/frame/claim-token/start`,
+  // post_url: `${baseUrl}/api/frame/claim-token/start`,
 });
 
 const frameTags = Object.entries(frameMetadata).map(([key, value]) => ({
